@@ -1,0 +1,223 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>分散加载（四）分散加载的结构 | 远远的博客</title><meta name="keywords" content="关键词1, 关键词2"><meta name="author" content="远远"><meta name="copyright" content="远远"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="1、我们先来解剖一只麻雀　　很多人会说我做项目时没用过分散加载啊，可能有些人甚至都不知道它的存在。事实上，开发环境会默认生成一个分散加载文件（或者叫链接器描述文件），你使用的可能就是这个默认的分散加载文件，先来看一下Keil默认生成的分散加载文件，使用LPC54608随便找了一个示例代码用Keil生成了一个，如下图所示：   　　这个分散加载是keil自己生成的分散加载，可以说是最简单的分散加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分散加载（四）分散加载的结构">
+<meta property="og:url" content="http://hyy.zone/2020/11/27/%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%EF%BC%88%E5%9B%9B%EF%BC%89%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%E7%9A%84%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="远远的博客">
+<meta property="og:description" content="1、我们先来解剖一只麻雀　　很多人会说我做项目时没用过分散加载啊，可能有些人甚至都不知道它的存在。事实上，开发环境会默认生成一个分散加载文件（或者叫链接器描述文件），你使用的可能就是这个默认的分散加载文件，先来看一下Keil默认生成的分散加载文件，使用LPC54608随便找了一个示例代码用Keil生成了一个，如下图所示：   　　这个分散加载是keil自己生成的分散加载，可以说是最简单的分散加">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://hyy.zone/img/avatar.jpg">
+<meta property="article:published_time" content="2020-11-26T23:58:21.000Z">
+<meta property="article:modified_time" content="2020-11-27T00:20:10.760Z">
+<meta property="article:author" content="远远">
+<meta property="article:tag" content="关键词1, 关键词2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://hyy.zone/img/avatar.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://hyy.zone/2020/11/27/%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%EF%BC%88%E5%9B%9B%EF%BC%89%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%E7%9A%84%E7%BB%93%E6%9E%84/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"top-center"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2020-11-27 08:20:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+   if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }const asideStatus = saveToLocal.get('aside-status')
+if (asideStatus !== undefined) {
+   if (asideStatus === 'hide') {
+     document.documentElement.classList.add('hide-aside')
+   } else {
+     document.documentElement.classList.remove('hide-aside')
+   }
+}})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">远远的博客</a></span><span id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><h1 class="post-title">分散加载（四）分散加载的结构</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2020-11-26T23:58:21.000Z" title="发表于 2020-11-27 07:58:21">2020-11-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2020-11-27T00:20:10.760Z" title="更新于 2020-11-27 08:20:10">2020-11-27</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><meta name="referrer" content="no-referrer">
+
+<h2 id="1、我们先来解剖一只麻雀"><a href="#1、我们先来解剖一只麻雀" class="headerlink" title="1、我们先来解剖一只麻雀"></a>1、我们先来解剖一只麻雀</h2><p>　　很多人会说我做项目时没用过分散加载啊，可能有些人甚至都不知道它的存在。事实上，开发环境会默认生成一个分散加载文件（或者叫链接器描述文件），你使用的可能就是这个默认的分散加载文件，先来看一下Keil默认生成的分散加载文件，使用LPC54608随便找了一个示例代码用Keil生成了一个，如下图所示：<br><img src="https://img-blog.csdn.net/20180411152738997">  </p>
+<p>　　这个分散加载是keil自己生成的分散加载，可以说是最简单的分散加载；里面红色字体的是各个段的起始地址以及大小，这些段的起始地址以及大小是由下图的红框框定的部分决定的，你可以把上图以及下面这张图合起来看，地址是一致的。<br><img src="https://img-blog.csdn.net/20180411154053210"></p>
+<p>　　这个分散加载文件的基本意思如下图：  </p>
+<p><img src="https://img-blog.csdn.net/20180412141159587">  </p>
+<p>　　这里面Flash以及SRAM的地址以及大小都是可以修改的，其他的也可以修改，但起始地址以及大小都要在芯片真实存在的有效物理地址上，这部分需要参看芯片的用户手册里面的Memory MAP一节的内容，如下图就是LPC54608的Memory MAP，参看分散加载里面的地址，Flash以及SRAM的起始地址以及大小都落在有效的空间上了。如果你定义的Flash起始地址在0x40000000，那么肯定会出错，因为与AHB总线地址冲突了。<br><img src="https://img-blog.csdn.net/20180412141039188">  </p>
+<h2 id="2、分散加载的基本结构"><a href="#2、分散加载的基本结构" class="headerlink" title="2、分散加载的基本结构"></a>2、分散加载的基本结构</h2><p>　　我们举个例子来说明分散加载文件的基本机构，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">LOAD_ROM_1 0x0000              【加载域描述】这段是要告诉链接器，你的程序是存在哪里？我从哪里去找需要执行的代码。</span><br><span class="line">&#123;                                                                        </span><br><span class="line">    EXEC_ROM_1 0x0000           【运行域描述】这段是要告诉链接器，你的程序在哪里执行，在ARM Cortex-M系列的绝大多</span><br><span class="line">    &#123;                            数MCU中加载域以及运行域是在同一个空间上的，即片内Flash。</span><br><span class="line">        program1.o (+RO)            【输入节描述】就是告诉链接器，具体把哪一个以及怎么把这一个obj文件放到运行域里面</span><br><span class="line">    &#125;</span><br><span class="line">    DRAM 0x18000 0x8000        【运行域描述】这里指的是RAM空间的运行域，下面会解释为什么这里会有两个运行域</span><br><span class="line">    &#123;</span><br><span class="line">        program1.o (+RW,+ZI)     【输入节描述】告诉链接器，去哪里找执行程序是需要使用的变量以及数据</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">LOAD_ROM_2 0x4000                【另一个加载域描述】同一个工程可以有多个加载域，就好像同一台电脑可以装几个操作系统</span><br><span class="line">&#123;</span><br><span class="line">    EXEC_ROM_2 0x4000             【另一个运行域描述】</span><br><span class="line">    &#123;</span><br><span class="line">        program2.o (+RO)             【另一个输入节】</span><br><span class="line">    &#125;</span><br><span class="line">    SRAM 0x8000 0x8000            【另一个运行域描述】</span><br><span class="line">    &#123;</span><br><span class="line">        program2.o (+RW,+ZI)      【另一个输入节】</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>　　其实Keil的官方帮助文档里面有官方的对分散加载的全面介绍与使用指导，但是里面的东西语言太官方了，搞了一大堆定义，然后又例子又很少，一大堆的专业术语，小编我最开始学这部分内容就是啃的这部分，真是想死的心情停不了啊~。好吧，下面我尽量多举例子，尽量少扯那些乱七八糟的术语，下面我们开始：</p>
+<blockquote>
+<p>你可能会问，这个分散加载文件是用什么语言编写的？是一种脚本语言，不是C语言也不是汇编，所以分散加载不能调试，它是一种叫做BNF的东东，官方文档里面把这东西描述的极其神秘，反正我是没太看懂这个所谓的BNF到底是个啥东东（据说是一个符号推导语言之类的一般存在于各种专业论文里面用于装B的东西），但是经过多个工程的磨练，小编我也基本弄明白了这东西该怎么用了，至于理论层面我没有深究，这个东东貌似做分散加载的描述脚本有些大材小用了，它能做的事情远不止于此，当然其他的跟我们没关系啦。<br>　　对于上面这个例子的几点说明：</p>
+</blockquote>
+<ol>
+<li>分散加载的根本功能是指定程序在存储空间上面的存储分配以及运行空间的分配~，所有要有加载域和运行域来分别指定程序存储空间以及程序运行空间。一般来说程序的运行空间是在芯片的ROM类存储器里面，在Cortex-M里面基本就是芯片内部的Flash空间；</li>
+<li>运行域就有意思了，由于MCU内部的Flash（几乎都是Nor-Flash）是可以运行代码的，但是不能用于变量也就是RW与ZI的加载，主要原因是变量需要经常修改，几个小时就可能连续改变几十万次，但是目前Flash工艺的写寿命介于10万次~100万次之间，如果把RW和ZI放在Flash上，那就是灾难，Flash会因为写次数的限制很快就会挂掉，而且Flash只能按块操作，开销太大，所以一般都是放到SRAM里面，所以你会看到在这个例子里面，运行域分成两个部分，RO数据段放在内部Flash里面，RW与ZI放到片内SRAM中去执行。这点与电脑是不同的，电脑的硬盘是完全不能执行程序的，所以如果你把电脑看成MCU的话，用Keil来编写程序的话，那么电脑的RO、RW、ZI段都是放到内存上执行的，也就是说电脑实际上只有一个执行域就在内存上，可以类似理解为MCU的片内SRAM上。其实很多市面上的A7、A8、A9、A53等内核的应用处理器运行Linux与Android也可以类比为电脑，所有的东西都要加载到RAM上运行。</li>
+<li>所以分散加载可以简单理解为的最基本结构就是至少3个域（这个事实上不对，但是对于大多数Cortex-M系列MCU的分散加载可以这样简单理解）： 至少一个加载域、建议两个运行域（一个RO运行域、一个RW+ZI运行域）， 就是你要告诉链接器至少3个信息，即：从哪里加载程序（至少一个域）、在哪里运行程序（至少一个域）、在哪里读写程序运行中用到的变量（至少一个域，实际上也可以跟运行程序的域在一起，但强烈建议分开）。如果你自己编写分散加载文件，先把这把这3个结构写出来，我们再来看之前的麻雀：<br><img src="https://img-blog.csdn.net/20180416225832333"></li>
+</ol>
+<ul>
+<li>LR_IROM1就是【加载域】，指定了用户程序存储在0x00000000起始大小为0x80000的地址上，用户程序从这个区域内加载；</li>
+<li>ER_IROM1就是【运行域】，是RO的运行域，因为LPC54608内部的Flash可以运行代码，所以用户代码可以从这个区域内运行；</li>
+<li>RW_IRAM1就是【运行域】，是RW+ZI的运行域，这里指向的是片内SRAM的地址。</li>
+</ul>
+<p>　　这样一解构，整个分散加载的基本结构就比较清晰了，下面我们再来看一个复杂一点的，同样的LPC54608的工程的分散加载<br><img src="https://img-blog.csdn.net/20180417211621229"></p>
+<p>　　这个大家仔细看下这个结构，基本上上面所说的3个域结构的扩展。这里有几点不同的独特地方，我们解释下：</p>
+<p>1、USB单独搞了两个运行域出来是干嘛的？<br>　　是这样的，USB由于要大量的数据吞吐，单独开辟一块SRAM作为数据BUFFER，所以你看到加载域2和加载域3的地址是在片内SRAM上，你可以对照一下上面的LPC5460的Memory MAP就会发现这两块地址是在片内SRAM上的。</p>
+<p>2、分散加载还可以指定堆栈？<br>　　没错，确实可以，上面这个例子就在分散加载里面指定了堆栈其中：ARM_LIB_HEAP域ARM_LIB_STACK是两个编译器之前就定义好的标号（Symbol），用于处理堆栈分配。当然堆栈也可以在启动代码里面指定分配，这是两种不同的方式，上面这个例子是在分散加载中指定堆栈。</p>
+<p>关于分散加载，我们要讲的远不止于此，接下来，我们还会用几篇文档的篇幅来深入探讨这部分的技术。</p>
+<p>转自：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_39118482/article/details/79895378">https://blog.csdn.net/weixin_39118482/article/details/79895378</a></p>
+</article><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/avatar.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2020/11/27/%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%EF%BC%88%E4%BA%94%EF%BC%89%E8%AF%AD%E6%B3%95/"><img class="prev-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">分散加载（五）语法</div></div></a></div><div class="next-post pull-right"><a href="/2020/11/26/ARM%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E5%85%A5%E6%A0%88%E5%88%86%E6%9E%90/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ARM局部变量入栈分析</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">远远</div><div class="author-info__description">嵌入式软件开发从业者</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/huyuan7494"><i class="fab fa-github"></i><span>GitHub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/huyuan7494" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:huyuan7494@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">如没有特别说明，本站中ARM Cortex-M相关的实操都基于Keil MDK5和STM32F103这个片子。</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E6%88%91%E4%BB%AC%E5%85%88%E6%9D%A5%E8%A7%A3%E5%89%96%E4%B8%80%E5%8F%AA%E9%BA%BB%E9%9B%80"><span class="toc-text">1、我们先来解剖一只麻雀</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="toc-text">2、分散加载的基本结构</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/27/%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%EF%BC%88%E4%BA%94%EF%BC%89%E8%AF%AD%E6%B3%95/" title="分散加载（五）语法">分散加载（五）语法</a><time datetime="2020-11-27T00:25:55.000Z" title="发表于 2020-11-27 08:25:55">2020-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/27/%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%EF%BC%88%E5%9B%9B%EF%BC%89%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%E7%9A%84%E7%BB%93%E6%9E%84/" title="分散加载（四）分散加载的结构">分散加载（四）分散加载的结构</a><time datetime="2020-11-26T23:58:21.000Z" title="发表于 2020-11-27 07:58:21">2020-11-27</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/26/ARM%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E5%85%A5%E6%A0%88%E5%88%86%E6%9E%90/" title="ARM局部变量入栈分析">ARM局部变量入栈分析</a><time datetime="2020-11-26T14:01:44.000Z" title="发表于 2020-11-26 22:01:44">2020-11-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/24/%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%EF%BC%88%E4%BA%8C%EF%BC%89%E6%A6%82%E5%BF%B5/" title="分散加载（二）概念">分散加载（二）概念</a><time datetime="2020-11-24T14:46:21.000Z" title="发表于 2020-11-24 22:46:21">2020-11-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2020/11/24/%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD%EF%BC%88%E4%B8%89%EF%BC%89%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D/" title="分散加载（三）简单介绍">分散加载（三）简单介绍</a><time datetime="2020-11-24T04:45:07.000Z" title="发表于 2020-11-24 12:45:07">2020-11-24</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://hyy.zone">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk({
+      clientID: 'd6d30cbf174f0b3d1ffb',
+      clientSecret: '4ffc0b9f30b12ce859fa1aeb93d9653fa4b2ff2a',
+      repo: 'huyuan7494.github.io',
+      owner: 'huyuan7494',
+      admin: ['huyuan7494'],
+      id: 'a10ab39cfc6e5543c72ac95bb8d40259',
+      language: 'zh-CN',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    })
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    $.getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js', initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script></div></body></html>
